@@ -6,16 +6,7 @@ const app = express();
 
 app.use(express.json());
 
-app.post("/signup", async (req, res) => {
-  const data = req.body;
-  const user = new User(data);
-  try {
-    await user.save();
-    res.send("user created successfully");
-  } catch (err) {
-    res.status(500).send("user can not be added to the database");
-  }
-});
+app.post("/signup", async (req, res) => {});
 
 connectDB()
   .then(() => {
