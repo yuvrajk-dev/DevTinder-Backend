@@ -62,14 +62,17 @@ const userSchema = new Schema(
 );
 
 userSchema.methods.getJWT = function () {
-  const token = jwt.sign({ _id: this._id.toString() }, process.env.JWT_SECRET, {
+  const user = this;
+
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
   return token;
 };
 
 userSchema.methods.isHashValid = async function (inputPassword) {
-  const isValid = await bcrypt.compare(inputPassword, this.password);
+  const user = this;
+  const isValid = await bcrypt.compare(inputPassword, user.password);
   return isValid;
 };
 
