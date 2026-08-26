@@ -3,6 +3,8 @@ const authRouter = express.Router();
 const User = require("../models/user");
 const { validateSignup } = require("../utils/validate");
 const bcrypt = require("bcrypt");
+const userAuth = require("../middleware/userAuth");
+const validator = require("validator");
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -58,4 +60,35 @@ authRouter.post("/logout", (req, res) => {
   } catch (err) {}
 });
 
+authRouter.post("/change-password", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    const requiredFields = ["currentPassword", "newPassword"];
+    if (!req.body || Object.keys(req.body).length === 0)
+      throw new Error("Invalid credentials");
+
+    const keys = Object.keys(req.body);
+    if (!requiredFields.every((key) => keys.includes(key)))
+      throw new Error("Invalid credentials");
+    const { currentPassword, newPassword } = req.body;
+    const dbOldPassword = user.password;
+    if (currentPassword === newPassword)
+      throw new Error("Password need to be different");
+
+    const isValid = await bcrypt.compare(currentPassword, dbOldPassword);
+    if (!isValid) throw new Error("Invalid credentials");
+    if (!validator.isStrongPassword(newPassword)) {
+      throw new Error(
+        "Password: 8+ chars, uppercase, lowercase, number & symbol required.",
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+    return res.status(200).send("Password changed successfully");
+  } catch (err) {
+    res.status(401).send(err.message);
+  }
+});
 module.exports = authRouter;
