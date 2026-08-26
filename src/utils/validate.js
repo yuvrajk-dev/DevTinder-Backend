@@ -19,4 +19,12 @@ function validateSignup(req) {
   return;
 }
 
-module.exports = validateSignup;
+function validateAllowedUpdates(req) {
+  const allowedUpdates = ["firstName", "lastName", "age", "gender"];
+
+  const keys = Object.keys(req.body);
+  if (keys.length === 0) throw new Error("Invalid input");
+  return keys.every((field) => allowedUpdates.includes(field));
+}
+
+module.exports = { validateSignup, validateAllowedUpdates };

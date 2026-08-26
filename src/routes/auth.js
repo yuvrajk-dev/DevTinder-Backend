@@ -1,7 +1,7 @@
 const express = require("express");
 const authRouter = express.Router();
 const User = require("../models/user");
-const validateSignup = require("../utils/validateSignup");
+const { validateSignup } = require("../utils/validate");
 const bcrypt = require("bcrypt");
 
 authRouter.post("/signup", async (req, res) => {
@@ -46,6 +46,16 @@ authRouter.post("/login", async (req, res) => {
   } catch (err) {
     return res.status(401).send("Invalid credentials");
   }
+});
+
+authRouter.post("/logout", (req, res) => {
+  try {
+    res.cookie("token", null, {
+      expires: new Date(Date.now()),
+    });
+
+    res.status(200).send("Logout successful");
+  } catch (err) {}
 });
 
 module.exports = authRouter;
