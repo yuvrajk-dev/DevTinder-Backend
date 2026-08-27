@@ -9,6 +9,7 @@ const userSchema = new Schema(
   {
     firstName: {
       type: String,
+      cast: "First name must be a valid string.",
       trim: true,
       required: [true, "First name is required."],
       minlength: [4, "First name must be at least 4 characters."],
@@ -17,6 +18,7 @@ const userSchema = new Schema(
 
     lastName: {
       type: String,
+      cast: "Last name must be a valid string.",
       trim: true,
       required: [true, "Last name is required."],
       minlength: [4, "Last name must be at least 4 characters."],
@@ -25,6 +27,7 @@ const userSchema = new Schema(
 
     emailId: {
       type: String,
+      cast: "Email must be a valid string.",
       required: [true, "Email is required."],
       lowercase: true,
       trim: true,
@@ -37,6 +40,7 @@ const userSchema = new Schema(
 
     age: {
       type: Number,
+      cast: "Age must be a valid number.",
       required: [true, "Age is required."],
       min: [18, "You must be at least 18 years old."],
       max: [100, "Please enter a valid age."],
@@ -44,6 +48,7 @@ const userSchema = new Schema(
 
     gender: {
       type: String,
+      cast: "Gender must be a valid string.",
       trim: true,
       required: [true, "Gender is required."],
       enum: {
@@ -54,6 +59,7 @@ const userSchema = new Schema(
 
     password: {
       type: String,
+      cast: "Password must be a valid string.",
       trim: true,
       required: [true, "Password is required."],
     },
@@ -67,12 +73,15 @@ userSchema.methods.getJWT = function () {
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
+
   return token;
 };
 
 userSchema.methods.isHashValid = async function (inputPassword) {
   const user = this;
+
   const isValid = await bcrypt.compare(inputPassword, user.password);
+
   return isValid;
 };
 
