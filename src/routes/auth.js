@@ -22,9 +22,21 @@ authRouter.post("/signup", async (req, res) => {
     });
 
     await user.save();
-    return res.status(201).send("User created successfully");
+    return res.status(201).json({
+      message: "User created successfully",
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        emailId: user.emailId,
+        age: user.age,
+        gender: user.gender,
+      },
+    });
   } catch (err) {
-    return res.status(400).send(err.message);
+    return res.status(400).json({
+      message: err.message,
+      data: null,
+    });
   }
 });
 
@@ -36,17 +48,29 @@ authRouter.post("/login", async (req, res) => {
     }
 
     const user = await User.findOne({ emailId });
-    if (!user) throw new Error();
+    if (!user) throw new Error("Invalid credentials");
     const isValid = await user.isHashValid(password);
     if (isValid) {
       const token = user.getJWT();
       res.cookie("token", token);
-      res.status(200).send("Login successful");
+      return res.status(200).json({
+        message: "Login successful",
+        data: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          emailId: user.emailId,
+          age: user.age,
+          gender: user.gender,
+        },
+      });
     } else {
-      throw new Error();
+      throw new Error("Invalid credentials");
     }
   } catch (err) {
-    return res.status(401).send("Invalid credentials");
+    return res.status(401).json({
+      message: err.message,
+      data: null,
+    });
   }
 });
 
@@ -56,8 +80,16 @@ authRouter.post("/logout", (req, res) => {
       expires: new Date(Date.now()),
     });
 
-    res.status(200).send("Logout successful");
-  } catch (err) {}
+    return res.status(200).json({
+      message: "Logout successful",
+      data: null,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+      data: null,
+    });
+  }
 });
 
 authRouter.post("/change-password", userAuth, async (req, res) => {
@@ -73,7 +105,9 @@ authRouter.post("/change-password", userAuth, async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     const dbOldPassword = user.password;
     if (currentPassword === newPassword)
-      throw new Error("Password need to be different");
+      throw new Error(
+        "New password must be different from the current password",
+      );
 
     const isValid = await bcrypt.compare(currentPassword, dbOldPassword);
     if (!isValid) throw new Error("Invalid credentials");
@@ -86,9 +120,15 @@ authRouter.post("/change-password", userAuth, async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
     await user.save();
-    return res.status(200).send("Password changed successfully");
+    return res.status(200).json({
+      message: "Password changed successfully",
+      data: null,
+    });
   } catch (err) {
-    res.status(401).send(err.message);
+    return res.status(401).json({
+      message: err.message,
+      data: null,
+    });
   }
 });
 module.exports = authRouter;

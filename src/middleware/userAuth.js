@@ -16,7 +16,10 @@ async function userAuth(req, res, next) {
     req.user = user;
     next();
   } catch (err) {
-    res.status(401).send(err.message);
+    return res.status(401).json({
+      message: err.message,
+      data: null,
+    });
   }
 }
 

@@ -7,14 +7,20 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
     return res.status(200).json({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      emailId: user.emailId,
-      age: user.age,
-      gender: user.gender,
+      message: "Profile data",
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        emailId: user.emailId,
+        age: user.age,
+        gender: user.gender,
+      },
     });
   } catch (err) {
-    res.status(400).send(err.message);
+    res.status(400).json({
+      message: err.message,
+      data: null,
+    });
   }
 });
 
@@ -27,17 +33,44 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     if (!isAllowed) {
       throw new Error("Update not allowed");
     }
+    const isSame = Object.keys(receivedUpdates).every(
+      (key) => user[key] === receivedUpdates[key],
+    );
+
+    if (isSame) {
+      return res.status(200).json({
+        message: "No changes were made",
+        data: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          emailId: user.emailId,
+          age: user.age,
+          gender: user.gender,
+        },
+      });
+    }
 
     Object.keys(receivedUpdates).forEach((key) => {
       user[key] = receivedUpdates[key];
     });
     await user.save();
 
-    return res
-      .status(200)
-      .json({ result: "sucsess", updates: receivedUpdates });
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        emailId: user.emailId,
+        age: user.age,
+        gender: user.gender,
+      },
+    });
   } catch (err) {
-    res.status(400).send(err.message);
+    const message =
+      err.name === "ValidationError"
+        ? Object.values(err.errors)[0].message
+        : err.message;
+    res.status(400).json({ message, data: null });
   }
 });
 
