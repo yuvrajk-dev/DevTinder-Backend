@@ -25,6 +25,12 @@ requestRouter.post(
           message: "Invalid user ID",
         });
       }
+
+      if (fromUserId.toString() === toUserId) {
+        return res.status(400).json({
+          message: "You cannot send a connection request to yourself",
+        });
+      }
       const user = await User.findById(toUserId);
 
       if (!user) {

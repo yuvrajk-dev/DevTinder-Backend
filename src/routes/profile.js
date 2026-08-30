@@ -14,6 +14,8 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
         emailId: user.emailId,
         age: user.age,
         gender: user.gender,
+        bio: user.bio,
+        skills: user.skills,
       },
     });
   } catch (err) {
@@ -33,9 +35,18 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     if (!isAllowed) {
       throw new Error("Update not allowed");
     }
-    const isSame = Object.keys(receivedUpdates).every(
-      (key) => user[key] === receivedUpdates[key],
-    );
+    const isSame = Object.keys(receivedUpdates).every((key) => {
+      if (Array.isArray(user[key]) && Array.isArray(receivedUpdates[key])) {
+        return (
+          user[key].length === receivedUpdates[key].length &&
+          user[key].every(
+            (value, index) => value === receivedUpdates[key][index],
+          )
+        );
+      }
+
+      return user[key] === receivedUpdates[key];
+    });
 
     if (isSame) {
       return res.status(200).json({
@@ -46,6 +57,8 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
           emailId: user.emailId,
           age: user.age,
           gender: user.gender,
+          bio: user.bio,
+          skills: user.skills,
         },
       });
     }
@@ -63,6 +76,8 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
         emailId: user.emailId,
         age: user.age,
         gender: user.gender,
+        bio: user.bio,
+        skills: user.skills,
       },
     });
   } catch (err) {

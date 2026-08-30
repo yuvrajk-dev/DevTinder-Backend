@@ -9,7 +9,8 @@ const validator = require("validator");
 authRouter.post("/signup", async (req, res) => {
   try {
     validateSignup(req);
-    const { firstName, lastName, emailId, age, gender, password } = req.body;
+    const { firstName, lastName, emailId, age, gender, bio, skills, password } =
+      req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
@@ -18,10 +19,15 @@ authRouter.post("/signup", async (req, res) => {
       emailId,
       age,
       gender,
+      bio,
+      skills,
       password: hashedPassword,
     });
 
     await user.save();
+
+    const token = user.getJWT();
+    res.cookie("token", token);
     return res.status(201).json({
       message: "User created successfully",
       data: {
@@ -30,11 +36,17 @@ authRouter.post("/signup", async (req, res) => {
         emailId: user.emailId,
         age: user.age,
         gender: user.gender,
+        bio: user.bio,
+        skills: user.skills,
       },
     });
   } catch (err) {
+    const message =
+      err.name === "ValidationError"
+        ? Object.values(err.errors)[0].message
+        : err.message;
     return res.status(400).json({
-      message: err.message,
+      message: message,
       data: null,
     });
   }
@@ -61,14 +73,20 @@ authRouter.post("/login", async (req, res) => {
           emailId: user.emailId,
           age: user.age,
           gender: user.gender,
+          bio: user.bio,
+          skills: user.skills,
         },
       });
     } else {
       throw new Error("Invalid credentials");
     }
   } catch (err) {
+    const message =
+      err.name === "ValidationError"
+        ? Object.values(err.errors)[0].message
+        : err.message;
     return res.status(401).json({
-      message: err.message,
+      message: message,
       data: null,
     });
   }
@@ -85,8 +103,12 @@ authRouter.post("/logout", (req, res) => {
       data: null,
     });
   } catch (err) {
+    const message =
+      err.name === "ValidationError"
+        ? Object.values(err.errors)[0].message
+        : err.message;
     return res.status(500).json({
-      message: err.message,
+      message: message,
       data: null,
     });
   }
@@ -125,8 +147,12 @@ authRouter.post("/change-password", userAuth, async (req, res) => {
       data: null,
     });
   } catch (err) {
+    const message =
+      err.name === "ValidationError"
+        ? Object.values(err.errors)[0].message
+        : err.message;
     return res.status(401).json({
-      message: err.message,
+      message: message,
       data: null,
     });
   }

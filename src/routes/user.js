@@ -1,7 +1,7 @@
 const express = require("express");
 const userAuth = require("../middleware/userAuth");
 const ConnectionRequest = require("../models/connectionRequest");
-const user = require("../models/user");
+const User = require("../models/user");
 const userRouter = express.Router();
 
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
@@ -13,7 +13,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
       status: "interested",
     })
       .select("fromUserId")
-      .populate("fromUserId", "firstName lastName age gender");
+      .populate("fromUserId", "firstName lastName age gender bio skills");
 
     if (data.length === 0) {
       return res.status(200).json({ message: "No incoming requests" });
@@ -33,8 +33,8 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     })
       .select("fromUserId toUserId")
-      .populate("fromUserId", "firstName lastName age gender")
-      .populate("toUserId", "firstName lastName age gender");
+      .populate("fromUserId", "firstName lastName age gender bio skills")
+      .populate("toUserId", "firstName lastName age gender bio skills");
     if (connections.length === 0) {
       return res.status(200).json({ message: "No connections" });
     }
@@ -71,11 +71,10 @@ userRouter.get("/feed", userAuth, async (req, res) => {
       hiddenUser.add(connection.toUserId);
     });
 
-    const feed = await user
-      .find({
-        _id: { $nin: [...hiddenUser, loggedInUser._id] },
-      })
-      .select("firstName lastName age gender")
+    const feed = await User.find({
+      _id: { $nin: [...hiddenUser, loggedInUser._id] },
+    })
+      .select("firstName lastName age gender bio skills")
       .sort({ _id: 1 })
       .skip(skip)
       .limit(limit);

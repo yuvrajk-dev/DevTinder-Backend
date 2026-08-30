@@ -56,6 +56,35 @@ const userSchema = new Schema(
         message: "Please select a valid gender.",
       },
     },
+    bio: {
+      type: String,
+      cast: "Bio must be a valid string.",
+      trim: true,
+      required: [true, "Bio is required."],
+      minlength: [10, "Bio must be at least 10 characters."],
+      maxlength: [300, "Bio cannot exceed 300 characters."],
+    },
+    skills: {
+      type: [String],
+      required: [true, "At least two skills are required."],
+      validate: [
+        {
+          validator: (skills) => skills.length >= 2,
+          message: "At least two skills are required.",
+        },
+        {
+          validator: (skills) => skills.length <= 5,
+          message: "You can add a maximum of 5 skills.",
+        },
+        {
+          validator: (skills) =>
+            skills.every(
+              (skill) => typeof skill === "string" && skill.trim().length > 0,
+            ),
+          message: "Skills cannot be empty.",
+        },
+      ],
+    },
 
     password: {
       type: String,

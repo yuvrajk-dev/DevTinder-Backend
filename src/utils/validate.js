@@ -20,7 +20,14 @@ function validateSignup(req) {
 }
 
 function validateAllowedUpdates(req) {
-  const allowedUpdates = ["firstName", "lastName", "age", "gender"];
+  const allowedUpdates = [
+    "firstName",
+    "lastName",
+    "age",
+    "gender",
+    "bio",
+    "skills",
+  ];
 
   const keys = Object.keys(req.body);
   if (keys.length === 0) throw new Error("Invalid input");
