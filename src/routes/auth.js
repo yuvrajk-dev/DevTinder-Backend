@@ -27,7 +27,11 @@ authRouter.post("/signup", async (req, res) => {
     await user.save();
 
     const token = user.getJWT();
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
     return res.status(201).json({
       message: "User created successfully",
       data: {
@@ -64,7 +68,11 @@ authRouter.post("/login", async (req, res) => {
     const isValid = await user.isHashValid(password);
     if (isValid) {
       const token = user.getJWT();
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      });
       return res.status(200).json({
         message: "Login successful",
         data: {
@@ -94,8 +102,10 @@ authRouter.post("/login", async (req, res) => {
 
 authRouter.post("/logout", (req, res) => {
   try {
-    res.cookie("token", null, {
-      expires: new Date(Date.now()),
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
     });
 
     return res.status(200).json({
