@@ -31,10 +31,12 @@ authRouter.post("/signup", async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000,
     });
     return res.status(201).json({
       message: "User created successfully",
       data: {
+        _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         emailId: user.emailId,
@@ -72,10 +74,12 @@ authRouter.post("/login", async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
       });
       return res.status(200).json({
         message: "Login successful",
         data: {
+          _id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           emailId: user.emailId,
