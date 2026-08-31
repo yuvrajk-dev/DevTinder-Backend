@@ -29,10 +29,16 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
     const connections = await ConnectionRequest.find({
-      status: "accepted",
-      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+      $or: [
+        { fromUserId: loggedInUser._id, status: "accepted" },
+        { toUserId: loggedInUser._id, status: "accepted" },
+        {
+          fromUserId: loggedInUser._id,
+          status: "interested",
+        },
+      ],
     })
-      .select("fromUserId toUserId")
+      .select("fromUserId toUserId status")
       .populate("fromUserId", "firstName lastName age gender bio skills")
       .populate("toUserId", "firstName lastName age gender bio skills");
     if (connections.length === 0) {
@@ -40,10 +46,14 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
     }
 
     const data = connections.map((connection) => {
-      if (connection.fromUserId._id.equals(loggedInUser._id)) {
-        return connection.toUserId;
-      }
-      return connection.fromUserId;
+      const isSender = connection.fromUserId._id.equals(loggedInUser._id);
+
+      const user = isSender ? connection.toUserId : connection.fromUserId;
+
+      return {
+        ...user.toObject(),
+        status: connection.status,
+      };
     });
 
     res.status(200).json({ message: "Connections", data });
