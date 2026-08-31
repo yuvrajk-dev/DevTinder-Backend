@@ -16,7 +16,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
       .populate("fromUserId", "firstName lastName age gender bio skills");
 
     if (data.length === 0) {
-      return res.status(200).json({ message: "No incoming requests" });
+      return res.status(200).json({ message: "No incoming requests", data });
     }
 
     res.status(200).json({ message: "Incoming requests", data });
@@ -46,7 +46,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       return connection.fromUserId;
     });
 
-    res.status(200).json({ message: "connections", data });
+    res.status(200).json({ message: "Connections", data });
   } catch (err) {
     res.status(500).send(err.message);
   }
