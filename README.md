@@ -12,32 +12,32 @@ The backend API powering **DevTinder**, a Tinder-inspired networking platform fo
 
 ## ✨ Features
 
-* 🔐 Secure user authentication
-* 🔑 Password hashing and secure credential handling
-* 🍪 Authentication using JWT and cookies
-* 👤 User profile creation and management
-* 🔍 Developer feed for discovering new developers
-* ❤️ Send connection requests
-* ❌ Ignore developers
-* 🤝 Accept or reject incoming requests
-* 👥 View accepted developer connections
-* 🛡️ Protected API routes
-* 🚫 Request validation and error handling
-* 🗄️ MongoDB database integration using Mongoose
+- 🔐 Secure user authentication
+- 🔑 Password hashing and secure credential handling
+- 🍪 Authentication using JWT and cookies
+- 👤 User profile creation and management
+- 🔍 Developer feed for discovering new developers
+- ❤️ Send connection requests
+- ❌ Ignore developers
+- 🤝 Accept or reject incoming requests
+- 👥 View accepted developer connections
+- 🛡️ Protected API routes
+- 🚫 Request validation and error handling
+- 🗄️ MongoDB database integration using Mongoose
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category       | Technology              |
-| -------------- | ----------------------- |
-| Runtime        | Node.js                 |
-| Framework      | Express.js              |
-| Database       | MongoDB                 |
-| ODM            | Mongoose                |
-| Authentication | JWT                     |
-| Security       | bcrypt                  |
-| Deployment     | Render                  |
+| Category       | Technology |
+| -------------- | ---------- |
+| Runtime        | Node.js    |
+| Framework      | Express.js |
+| Database       | MongoDB    |
+| ODM            | Mongoose   |
+| Authentication | JWT        |
+| Security       | bcrypt     |
+| Deployment     | Render     |
 
 ---
 
@@ -61,7 +61,7 @@ npm install
 ```env
 PORT=7777
 
-DB_CONNECTION_SECRET=your_mongodb_connection_string
+MONGODB_URI=your_mongodb_connection_string
 
 JWT_SECRET=your_jwt_secret
 ```
@@ -78,14 +78,14 @@ npm run dev
 
 The API supports functionality for:
 
-* User signup and login
-* User authentication and logout
-* Viewing and editing user profiles
-* Fetching developer feeds
-* Sending connection or ignore requests
-* Accepting or rejecting connection requests
-* Viewing pending connection requests
-* Viewing accepted developer connections
+- User signup and login
+- User authentication and logout
+- Viewing and editing user profiles
+- Fetching developer feeds
+- Sending connection or ignore requests
+- Accepting or rejecting connection requests
+- Viewing pending connection requests
+- Viewing accepted developer connections
 
 ---
 
@@ -107,5 +107,5 @@ The backend API is deployed on Render.
 
 **Yuvraj Kumar**
 
-* GitHub: https://github.com/yuvrajk-dev
-* LinkedIn: https://linkedin.com/in/yuvrajkumar01
+- GitHub: https://github.com/yuvrajk-dev
+- LinkedIn: https://linkedin.com/in/yuvrajkumar01
