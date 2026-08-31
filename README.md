@@ -5,58 +5,71 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-green)
 ![Mongoose](https://img.shields.io/badge/Mongoose-ODM-red)
 ![JWT](https://img.shields.io/badge/Auth-JWT-blue)
+![Render](https://img.shields.io/badge/Deployed-Render-black)
 
-The backend API powering **DevTinder**, a Tinder-inspired networking platform for developers. It handles authentication, user profiles, developer discovery, connection requests, and user connections.
+The backend API powering **DevTinder**, a developer networking platform inspired by Tinder-style discovery.
+
+It handles **authentication, user profiles, developer discovery, connection requests, request reviews, and developer connections** using a REST API architecture.
+
+🔗 **Frontend Repository:** https://github.com/yuvrajk-dev/DevTinder-Frontend
+
+🔗 **Live Application:** https://devtinder-social.vercel.app
 
 ---
 
 ## ✨ Features
 
-- 🔐 Secure user authentication
-- 🔑 Password hashing and secure credential handling
-- 🍪 Authentication using JWT and cookies
-- 👤 User profile creation and management
-- 🔍 Developer feed for discovering new developers
-- ❤️ Send connection requests
-- ❌ Ignore developers
-- 🤝 Accept or reject incoming requests
-- 👥 View accepted developer connections
-- 🛡️ Protected API routes
-- 🚫 Request validation and error handling
-- 🗄️ MongoDB database integration using Mongoose
+* 🔐 Secure user authentication with JWT
+* 🍪 HTTP-only cookie-based authentication
+* 🔑 Password hashing using bcrypt
+* 👤 User signup, login, logout, and profile management
+* 🔍 Developer discovery feed with pagination
+* 🚫 Automatically filters developers the user has already interacted with
+* ❤️ Send connection requests
+* ❌ Ignore developers
+* 🚫 Prevent duplicate connection requests
+* 🤝 Accept or reject incoming connection requests
+* 👥 View accepted connections
+* 📩 View pending incoming connection requests
+* 🛡️ Protected API routes using authentication middleware
+* ✅ Request and input validation
+* 🗄️ MongoDB database integration with Mongoose
+* 🌐 CORS configuration for frontend-backend communication
+* ⚠️ Error handling for invalid requests and resources
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category       | Technology |
-| -------------- | ---------- |
-| Runtime        | Node.js    |
-| Framework      | Express.js |
-| Database       | MongoDB    |
-| ODM            | Mongoose   |
-| Authentication | JWT        |
-| Security       | bcrypt     |
-| Deployment     | Render     |
+| Category          | Technology |
+| ----------------- | ---------- |
+| Runtime           | Node.js    |
+| Framework         | Express.js |
+| Database          | MongoDB    |
+| ODM               | Mongoose   |
+| Authentication    | JWT        |
+| Password Security | bcrypt     |
+| Deployment        | Render     |
+| API Testing       | Postman    |
 
 ---
 
 ## 🚀 Getting Started
 
-### Clone the repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yuvrajk-dev/YOUR-BACKEND-REPO.git
-cd YOUR-BACKEND-REPO
+git clone https://github.com/yuvrajk-dev/DevTinder-Backend.git
+cd DevTinder-Backend
 ```
 
-### Install dependencies
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### Create a `.env` file
+### 3. Create a `.env` file
 
 ```env
 PORT=7777
@@ -66,40 +79,142 @@ MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 ```
 
-### Start the development server
+### 4. Start the development server
 
 ```bash
 npm run dev
 ```
 
+The server will start on:
+
+```text
+http://localhost:7777
+```
+
 ---
 
-## 🔌 API Functionality
+# 🔌 API Functionality
 
-The API supports functionality for:
+## 🔐 Authentication
 
-- User signup and login
-- User authentication and logout
-- Viewing and editing user profiles
-- Fetching developer feeds
-- Sending connection or ignore requests
-- Accepting or rejecting connection requests
-- Viewing pending connection requests
-- Viewing accepted developer connections
+The API supports:
+
+* User signup
+* User login
+* User logout
+* JWT generation and verification
+* HTTP-only cookie authentication
+
+---
+
+## 👤 User Profiles
+
+Authenticated users can:
+
+* View their profile
+* Edit profile information
+* Access protected user routes
+
+---
+
+## 🔍 Developer Feed
+
+The feed returns developers that the logged-in user has **not already interacted with**.
+
+Users involved in previous connection requests are filtered from the feed to prevent repeated profiles and duplicate interactions.
+
+The feed also supports pagination using query parameters.
+
+Example:
+
+```text
+/feed?page=1&limit=10
+```
+
+---
+
+## ❤️ Connection Requests
+
+Users can send two types of interactions:
+
+```text
+interested
+ignored
+```
+
+The API validates requests to prevent:
+
+* Invalid request statuses
+* Requests to yourself
+* Invalid user IDs
+* Requests to non-existent users
+* Duplicate connection requests
+
+---
+
+## 🤝 Reviewing Requests
+
+Users receiving an **interested** request can review it with:
+
+```text
+accepted
+rejected
+```
+
+Only the intended recipient of a pending request can review that request.
+
+---
+
+## 👥 Connections
+
+The API allows users to retrieve:
+
+* Accepted developer connections
+* Pending incoming connection requests
+
+Connection data is populated with developer profile information for frontend consumption.
+
+---
+
+## 🔒 Security
+
+DevTinder implements several security and validation practices:
+
+* JWT-based authentication
+* HTTP-only cookies
+* Password hashing with bcrypt
+* Protected routes with authentication middleware
+* Input validation
+* MongoDB ObjectId validation
+* Request status validation
+* Authorization checks before reviewing requests
+* CORS configuration
 
 ---
 
 ## 💡 Why I Built This
 
-I built the DevTinder backend to strengthen my understanding of **backend development, REST APIs, authentication, database modeling, and request handling**.
+I built the DevTinder backend to strengthen my understanding of **backend development and real-world REST API architecture**.
 
-The project demonstrates how a real-world social networking application can manage users, authentication, relationships between users, and connection workflows using **Node.js, Express.js, MongoDB, and Mongoose**.
+The project focuses on how a networking application manages:
+
+* User authentication
+* Protected resources
+* Database relationships
+* Connection workflows
+* Request validation
+* Authorization
+* Developer discovery
+
+Building this project gave me hands-on experience with **Node.js, Express.js, MongoDB, Mongoose, JWT authentication, middleware, and REST API design**.
 
 ---
 
-## 🚀 Deployment
+## 🌐 Deployment
 
-The backend API is deployed on Render.
+The backend API is deployed on **Render** and serves the REST APIs consumed by the DevTinder React frontend.
+
+🔗 **Live Application:** https://devtinder-social.vercel.app
 
 ---
 
@@ -107,5 +222,6 @@ The backend API is deployed on Render.
 
 **Yuvraj Kumar**
 
-- GitHub: https://github.com/yuvrajk-dev
-- LinkedIn: https://linkedin.com/in/yuvrajkumar01
+* GitHub: https://github.com/yuvrajk-dev
+* LinkedIn: https://linkedin.com/in/yuvrajkumar01
+* Portfolio: https://yuvrajk-dev.vercel.app
